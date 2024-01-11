@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "git.dragomordor.simpletms"
-version = "1.0.0"
+version = "1.0.2"
 
 architectury {
     platformSetupLoomIde()
@@ -35,6 +35,6 @@ dependencies {
     mappings(loom.officialMojangMappings())
     forge("net.minecraftforge:forge:1.20.1-47.2.0")
 
-    modImplementation("com.cobblemon:forge:1.4.0+1.20.1")
+    modImplementation("com.cobblemon:forge:1.4.0+")
     runtimeOnly("thedarkcolour:kotlinforforge:4.5.0")
 }

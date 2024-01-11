@@ -5,7 +5,7 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
 import git.dragomordor.simpletms.forge.item.SimpleTMsItems;
-import git.dragomordor.simpletms.forge.util.OverlayMesage;
+import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -29,7 +29,7 @@ public class BlankTMItem extends PokemonUseItem {
     @Override
     public InteractionResult processInteraction(ItemStack itemStack, Player player, PokemonEntity target, Pokemon pokemon) {
         if (!SimpleTMsCommonConfig.IMPRINTABLE_BLANK_TMS.get()) {
-            OverlayMesage.displayOverlayMessage("Blank TM and TR imprinting disabled!",false);
+            OverlayMessage.displayOverlayMessage(player,"Blank TM and TR imprinting disabled!");
             return InteractionResult.FAIL;
         }
 
@@ -54,7 +54,7 @@ public class BlankTMItem extends PokemonUseItem {
         }
         itemStack.shrink(1); // delete blank tm
 
-        OverlayMesage.displayOverlayMessage("Imprinted "+FirstMoveInMovesetMove.getDisplayName().getString()+blankTitle+"!",false);
+        OverlayMessage.displayOverlayMessage(player,"Imprinted "+FirstMoveInMovesetMove.getDisplayName().getString()+blankTitle+"!");
 
         player.level().playSound(null,player.blockPosition(), SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,1.0f,2.0f);
         return InteractionResult.SUCCESS;

@@ -4,7 +4,7 @@ import com.cobblemon.mod.common.api.interaction.PokemonEntityInteraction.Ownersh
 import com.cobblemon.mod.common.api.storage.StoreCoordinates;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import git.dragomordor.simpletms.forge.util.OverlayMesage;
+import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +27,7 @@ public abstract class PokemonUseItem extends Item {
 
         //checks whether target is Pokémon
         if (!(target instanceof PokemonEntity)) {
-            OverlayMesage.displayOverlayMessage("Not a Pokemon",false);
+            OverlayMessage.displayOverlayMessage(player,"Not a Pokemon");
             return InteractionResult.FAIL;
         }
 
@@ -46,7 +46,7 @@ public abstract class PokemonUseItem extends Item {
         }
 
         if (ownership != Ownership.OWNER) {
-            OverlayMesage.displayOverlayMessage("Not your Pokémon",false);
+            OverlayMessage.displayOverlayMessage(player,"Not your Pokémon");
 
             return InteractionResult.FAIL;
         }

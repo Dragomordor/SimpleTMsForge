@@ -4,11 +4,15 @@ import com.cobblemon.mod.common.api.moves.*;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
-import git.dragomordor.simpletms.forge.util.OverlayMesage;
+import git.dragomordor.simpletms.forge.network.ModNetwork;
+import git.dragomordor.simpletms.forge.network.ModPacketHandler;
+import git.dragomordor.simpletms.forge.network.ServerCooldownTicksPacket;
+import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -16,6 +20,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.NetworkDirection;
 import org.jetbrains.annotations.Nullable;
 
 
@@ -35,6 +42,8 @@ public class MoveTutorItem extends PokemonUseItem {
         SingleUse = singleUse;
     }
 
+
+
     @Override
     public InteractionResult processInteraction(ItemStack itemStack, Player player, PokemonEntity target, Pokemon pokemon) {
 
@@ -45,16 +54,18 @@ public class MoveTutorItem extends PokemonUseItem {
         final int cooldownTicks = SimpleTMsCommonConfig.TM_COOLDOWN_TICKS.get(); // Define the cooldown in ticks
 
         if (player.getCooldowns().isOnCooldown(this)) {
-            OverlayMesage.displayOverlayMessage("TM is on cooldown.", false);
+            OverlayMessage.displayOverlayMessage(player,"TM is on cooldown.");
+
             return InteractionResult.FAIL;
         }
         if (taughtMove == null) {
-            OverlayMesage.displayOverlayMessage("Invalid move!", false);
+            OverlayMessage.displayOverlayMessage(player,"Invalid move!");
+
             return InteractionResult.FAIL;
         }
         if (currentmoves.getMoves().stream().anyMatch(move -> move.getTemplate().equals(taughtMove))
                 || benchedMovesContainsMove(benchedMoves, taughtMove)) {
-            OverlayMesage.displayOverlayMessage(pokemon.getSpecies().getName() + " already knows " + taughtMove.getDisplayName().getString() + "!", false);
+            OverlayMessage.displayOverlayMessage(player,pokemon.getSpecies().getName() + " already knows " + taughtMove.getDisplayName().getString() + "!");
             return InteractionResult.FAIL;
         }
         // can Pokémon learn move?
@@ -62,7 +73,7 @@ public class MoveTutorItem extends PokemonUseItem {
 
         // if Pokémon can't learn move, return fail
         if (!canLearnMove) {
-            OverlayMesage.displayOverlayMessage((pokemon.getSpecies().getName() + " cannot be taught " + taughtMove.getDisplayName().getString()), false);
+            OverlayMessage.displayOverlayMessage(player,pokemon.getSpecies().getName() + " cannot be taught " + taughtMove.getDisplayName().getString());
             return InteractionResult.FAIL;
         }
         // if Pokémon can learn move, teach move
@@ -71,7 +82,7 @@ public class MoveTutorItem extends PokemonUseItem {
         } else {
             benchedMoves.add(new BenchedMove(taughtMove, 0));
         }
-        OverlayMesage.displayOverlayMessage("Taught " + pokemon.getSpecies().getName() + " " + taughtMove.getDisplayName().getString() + "!", false);
+        OverlayMessage.displayOverlayMessage(player,"Taught " + pokemon.getSpecies().getName() + " " + taughtMove.getDisplayName().getString() + "!");
         // removes item if it is single use
         if (SingleUse) {
             itemStack.shrink(1); // remove item after use
@@ -79,6 +90,9 @@ public class MoveTutorItem extends PokemonUseItem {
         // Puts item on cooldown if not singleUse
         if (!SingleUse && (cooldownTicks > 0)) {
             player.getCooldowns().addCooldown(this, cooldownTicks);
+            // Send the server-configured cooldown ticks to the client
+            ModNetwork.CHANNEL.sendTo(new ServerCooldownTicksPacket(cooldownTicks), ((ServerPlayer) player).connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+
         }
         // play level up sound if Pokémon is taught move
         player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f);
@@ -134,6 +148,7 @@ public class MoveTutorItem extends PokemonUseItem {
         moveTypeColors.put("Water", 0x63A8EB);
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
         super.appendHoverText(stack, world, tooltip, context);
 

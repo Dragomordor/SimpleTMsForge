@@ -4,6 +4,7 @@ import git.dragomordor.simpletms.forge.config.SimpleTMsClientConfigs;
 import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
 import git.dragomordor.simpletms.forge.item.SimpleTMsItemGroups;
 import git.dragomordor.simpletms.forge.item.SimpleTMsItems;
+import git.dragomordor.simpletms.forge.network.ModNetwork;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -18,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 public class SimpleTMsMod {
     public static final Logger LOGGER = LogManager.getLogger(SimpleTMsMod.class); // create logger
     public static final String MODID = "simpletms"; // mod ID
+    public static final String MOD_CHANNEL = MODID + ":network";
 
     public SimpleTMsMod() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -35,6 +37,9 @@ public class SimpleTMsMod {
         // Load config file
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SimpleTMsClientConfigs.SPEC, "simpletms-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SimpleTMsCommonConfig.SPEC, "simpletms-common.toml");
+
+        // Load network
+        ModNetwork.initialize();
 
     }
 
