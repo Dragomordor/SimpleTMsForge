@@ -1,6 +1,6 @@
 package git.dragomordor.simpletms.forge.network;
 
-import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
+import git.dragomordor.simpletms.forge.config.SimpleTMsConfig;
 import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -10,9 +10,11 @@ import java.util.function.Supplier;
 
 public class ModPacketHandler {
     public static final ModPacketHandler INSTANCE = new ModPacketHandler();
+    private static SimpleTMsConfig config;
 
-
-
+    public static void initializeConfig() {
+        config = SimpleTMsConfig.Builder.load();
+    }
     public static void handleDisplayOverlayMessagePacket(OverlayMessage.DisplayOverlayMessagePacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
@@ -35,7 +37,7 @@ public class ModPacketHandler {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
             // Update the client-side config with the server-configured cooldown ticks
-            SimpleTMsCommonConfig.TM_COOLDOWN_TICKS.set(message.getCooldownTicks());
+            config.tmCooldownTicks = message.getCooldownTicks();
         });
         context.setPacketHandled(true);
     }

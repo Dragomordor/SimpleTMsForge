@@ -3,7 +3,7 @@ package git.dragomordor.simpletms.forge.item.custom;
 import com.cobblemon.mod.common.api.moves.Move;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
+import git.dragomordor.simpletms.forge.config.SimpleTMsConfig;
 import git.dragomordor.simpletms.forge.item.SimpleTMsItems;
 import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Objects;
 
 public class BlankTMItem extends PokemonUseItem {
+    SimpleTMsConfig config = SimpleTMsConfig.Builder.load();
+
+
     private final boolean IsTM;
     String prefix;
     String blankTitle;
@@ -28,7 +31,8 @@ public class BlankTMItem extends PokemonUseItem {
 
     @Override
     public InteractionResult processInteraction(ItemStack itemStack, Player player, PokemonEntity target, Pokemon pokemon) {
-        if (!SimpleTMsCommonConfig.IMPRINTABLE_BLANK_TMS.get()) {
+
+        if (!config.imprintableBlankTMs) {
             OverlayMessage.displayOverlayMessage(player,"Blank TM and TR imprinting disabled!");
             return InteractionResult.FAIL;
         }

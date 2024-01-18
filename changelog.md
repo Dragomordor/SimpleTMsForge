@@ -6,3 +6,8 @@
 
 ## [1.0.2 (January 8th, 2024)](#1-0-2)
 - Fixed Server functionality
+
+#### [1.1.0 (January 18th, 2024)](#1-1-0)
+- Added 2 config options for TM and TR drop chance from wild Pokemon
+- Pokémon now have a (by default) 5% chance to drop a TR or a 0.01% chance to drop a TM.
+  TMs and TRs that drop are based on the Pokémon's tm, egg and tutor move list.

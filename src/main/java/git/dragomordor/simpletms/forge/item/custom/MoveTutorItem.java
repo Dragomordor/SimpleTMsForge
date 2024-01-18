@@ -3,9 +3,8 @@ package git.dragomordor.simpletms.forge.item.custom;
 import com.cobblemon.mod.common.api.moves.*;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.cobblemon.mod.common.pokemon.Pokemon;
-import git.dragomordor.simpletms.forge.config.SimpleTMsCommonConfig;
+import git.dragomordor.simpletms.forge.config.SimpleTMsConfig;
 import git.dragomordor.simpletms.forge.network.ModNetwork;
-import git.dragomordor.simpletms.forge.network.ModPacketHandler;
 import git.dragomordor.simpletms.forge.network.ServerCooldownTicksPacket;
 import git.dragomordor.simpletms.forge.util.OverlayMessage;
 import net.minecraft.ChatFormatting;
@@ -31,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MoveTutorItem extends PokemonUseItem {
+    SimpleTMsConfig config = SimpleTMsConfig.Builder.load();
     private final String moveName;
     private final String moveType;
     private final boolean SingleUse;
@@ -51,7 +51,7 @@ public class MoveTutorItem extends PokemonUseItem {
         BenchedMoves benchedMoves = pokemon.getBenchedMoves(); // moves Pokémon currently has benched
         MoveTemplate taughtMove = Moves.INSTANCE.getByName(moveName);
 
-        final int cooldownTicks = SimpleTMsCommonConfig.TM_COOLDOWN_TICKS.get(); // Define the cooldown in ticks
+        final int cooldownTicks = config.tmCooldownTicks; // Define the cooldown in ticks
 
         if (player.getCooldowns().isOnCooldown(this)) {
             OverlayMessage.displayOverlayMessage(player,"TM is on cooldown.");
@@ -109,17 +109,17 @@ public class MoveTutorItem extends PokemonUseItem {
     }
 
     private boolean canLearnMove(ItemStack itemStack, Player player, PokemonEntity target, Pokemon pokemon, MoveTemplate taughtMove) {
-        boolean canLearnMove = SimpleTMsCommonConfig.ALL_MOVES_LEARABLE.get(); // Default value for canLearnMove
+        boolean canLearnMove = config.anyMoveAnyPokemon; // Default value for canLearnMove
         if (canLearnMove) {
             return true;
         }
         if (pokemon.getForm().getMoves().getTmMoves().contains(taughtMove)) {
             return true;
         }
-        if (pokemon.getForm().getMoves().getTutorMoves().contains(taughtMove) && SimpleTMsCommonConfig.TUTOR_MOVES_LEARABLE.get()) {
+        if (pokemon.getForm().getMoves().getTutorMoves().contains(taughtMove) && config.tutorMovesLearnable) {
             return true;
         }
-        if (pokemon.getForm().getMoves().getEggMoves().contains(taughtMove) && SimpleTMsCommonConfig.EGG_MOVES_LEARABLE.get()) {
+        if (pokemon.getForm().getMoves().getEggMoves().contains(taughtMove) && config.eggMovesLearnable) {
             return true;
         }
         return false;
@@ -157,7 +157,7 @@ public class MoveTutorItem extends PokemonUseItem {
         if (player != null) {
             if (player.getCooldowns().isOnCooldown(this)) {
                 // get remaining cooldown
-                int maxCooldownTicks = SimpleTMsCommonConfig.TM_COOLDOWN_TICKS.get();
+                int maxCooldownTicks = config.tmCooldownTicks;
                 int ticksLeft = Math.round(player.getCooldowns().getCooldownPercent(this, 0.0F) * maxCooldownTicks);
                 //convert cooldown to seconds, minutes, hours
                 int hoursLeft = ticksLeft / 72000; // 72000 ticks = 1 hour
@@ -205,6 +205,17 @@ public class MoveTutorItem extends PokemonUseItem {
             tooltip.add(Component.literal(moveType).withStyle(Style.EMPTY.withColor(color)));
         }
     }
+
+
+    public String getMoveType() {
+        return moveType;
+    }
+
+    public String getMoveName() {
+        return moveName;
+    }
+
+
 }
 
 
