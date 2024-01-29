@@ -32,29 +32,28 @@ public class ModEvents {
         // If only one player is involved, proceed
         if (players.size() == 1) {
             BattlePokemon killed = event.getKilled();
-            Pokemon pokemon = killed.getEntity().getPokemon();
-            ServerPlayer playerEntity = players.get(0);
+            Pokemon pokemon = killed.getEffectedPokemon();
 
-            if (!(pokemon.isPlayerOwned())) { // only wild pokemon drop TMs
-                // Get the world and position where the Pokémon fainted
-                Level world = pokemon.getEntity().getCommandSenderWorld();
-                BlockPos pos = pokemon.getEntity().blockPosition();
+            if (!pokemon.isWild()) return; // only wild pokemon drop TMs
+            
+            // Get the world and position where the Pokémon fainted
+            Level world = pokemon.getEntity().getCommandSenderWorld();
+            BlockPos pos = pokemon.getEntity().blockPosition();
 
-                ItemStack droppedTMitem = SimpleTMsItems.getRandomTMItemStack(pokemon);
-                ItemStack droppedTRitem = SimpleTMsItems.getRandomTRItemStack(pokemon);
+            ItemStack droppedTMitem = SimpleTMsItems.getRandomTMItemStack(pokemon);
+            ItemStack droppedTRitem = SimpleTMsItems.getRandomTRItemStack(pokemon);
 
-                // Spawn the chosen TM item
-                float randomTMChance = world.getRandom().nextFloat() * 100;
-                float dropChanceTMPercentage = config.tmDropPercentChance;
+            // Spawn the chosen TM item
+            float randomTMChance = world.getRandom().nextFloat() * 100;
+            float dropChanceTMPercentage = config.tmDropPercentChance;
 
-                if (randomTMChance <= dropChanceTMPercentage && !droppedTMitem.isEmpty()) {
-                    spawnTMItem(world, pos, droppedTMitem, event);
-                } else {
-                    float randomTRChance = world.getRandom().nextFloat() * 100;
-                    float dropChanceTRPercentage = config.trDropPercentChance;
-                    if (randomTRChance <= dropChanceTRPercentage && !droppedTRitem.isEmpty()) {
-                        spawnTMItem(world, pos, droppedTRitem, event);
-                    }
+            if (randomTMChance <= dropChanceTMPercentage && !droppedTMitem.isEmpty()) {
+                spawnTMItem(world, pos, droppedTMitem, event);
+            } else {
+                float randomTRChance = world.getRandom().nextFloat() * 100;
+                float dropChanceTRPercentage = config.trDropPercentChance;
+                if (randomTRChance <= dropChanceTRPercentage && !droppedTRitem.isEmpty()) {
+                    spawnTMItem(world, pos, droppedTRitem, event);
                 }
             }
         }
