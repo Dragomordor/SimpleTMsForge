@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -29,57 +30,54 @@ public class ModEvents {
     private void handleCobblemonBattleFaintedEvent(BattleFaintedEvent event) {
         // Get all players involved in the battle
         List<ServerPlayer> players = event.getBattle().getPlayers();
-        // If only one player is involved, proceed
+        // If only one player is involved, proceed (only for 1 player PvE)
         if (players.size() == 1) {
+            ServerPlayer playerEntity = players.get(0);
+
             BattlePokemon killed = event.getKilled();
             Pokemon pokemon = killed.getEffectedPokemon();
 
-            if (!pokemon.isWild()) return; // only wild pokemon drop TMs
-            
-            // Get the world and position where the Pokémon fainted
-            Level world = pokemon.getEntity().getCommandSenderWorld();
-            BlockPos pos = pokemon.getEntity().blockPosition();
+            if (!(pokemon.isPlayerOwned())) { // only wild Pokémon drop TMs
+                BlockPos pos;
+                Level world = playerEntity.getCommandSenderWorld();
 
-            ItemStack droppedTMitem = SimpleTMsItems.getRandomTMItemStack(pokemon);
-            ItemStack droppedTRitem = SimpleTMsItems.getRandomTRItemStack(pokemon);
+                if (pokemon.getEntity()==null) { // spawn item on player
+                    pos = playerEntity.blockPosition();
+                } else { // spawn item on pokemon
+                    pos = pokemon.getEntity().blockPosition();
+                }
 
-            // Spawn the chosen TM item
-            float randomTMChance = world.getRandom().nextFloat() * 100;
-            float dropChanceTMPercentage = config.tmDropPercentChance;
+                ItemStack droppedTMitem = SimpleTMsItems.getRandomTMItemStack(pokemon);
+                ItemStack droppedTRitem = SimpleTMsItems.getRandomTRItemStack(pokemon);
 
-            if (randomTMChance <= dropChanceTMPercentage && !droppedTMitem.isEmpty()) {
-                spawnTMItem(world, pos, droppedTMitem, event);
-            } else {
-                float randomTRChance = world.getRandom().nextFloat() * 100;
-                float dropChanceTRPercentage = config.trDropPercentChance;
-                if (randomTRChance <= dropChanceTRPercentage && !droppedTRitem.isEmpty()) {
-                    spawnTMItem(world, pos, droppedTRitem, event);
+                float randomTMChance = world.getRandom().nextFloat() * 100;
+                float dropChanceTMPercentage = config.tmDropPercentChance;
+
+                // Spawn the chosen TM item
+                if (randomTMChance <= dropChanceTMPercentage && !droppedTMitem.isEmpty()) {
+                    spawnTMItem(world, playerEntity, pos, droppedTMitem, event);
+                } else {
+                    float randomTRChance = world.getRandom().nextFloat() * 100;
+                    float dropChanceTRPercentage = config.trDropPercentChance;
+                    if (randomTRChance <= dropChanceTRPercentage && !droppedTRitem.isEmpty()) {
+                        spawnTMItem(world, playerEntity, pos, droppedTMitem, event);
+                    }
                 }
             }
         }
     }
 
-    private static void spawnTMItem(Level world, BlockPos pos, ItemStack tmItemStack, BattleFaintedEvent event) {
-        ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), tmItemStack);
-
+    private static void spawnTMItem(Level world, Player player, BlockPos pos, ItemStack tmItemStack, BattleFaintedEvent event) {
         String tmName = tmItemStack.getDisplayName().getString();
-        // Get all players involved in the battle
-        List<ServerPlayer> players = event.getBattle().getPlayers();
 
-        if (players.size() == 1) {
-            ServerPlayer playerEntity = players.get(0);
-
-            // Add the TM item to the player's inventory
-            Inventory playerInventory = playerEntity.getInventory();
-            if (!playerInventory.add(tmItemStack)) {
-                // If the inventory is full, drop the item in the world
-                world.addFreshEntity(itemEntity);
-            }
-            OverlayMessage.displayOverlayMessage(playerEntity,"Received "+tmName+" from "+event.getKilled().getEntity().getPokemon().getDisplayName().getString());
-        } else {
-            // If there is no player or more than one player, simply spawn the item in the world
+        ItemEntity itemEntity = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), tmItemStack);
+        // Add the TM item to the player's inventory
+        Inventory playerInventory = player.getInventory();
+        if (!playerInventory.add(tmItemStack)) { // If the inventory is full, drop the item in the world
             world.addFreshEntity(itemEntity);
         }
+        OverlayMessage.displayOverlayMessage(player,"Received "+tmName+" from "+event.getKilled().getEffectedPokemon().getDisplayName().getString());
+
     }
 
 
