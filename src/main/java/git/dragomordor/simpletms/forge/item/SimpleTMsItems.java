@@ -595,7 +595,6 @@ public class SimpleTMsItems {
     public static RegistryObject<Item> TM_OVERDRIVE = registerMoveTutorItem("tm_overdrive", "overdrive","Electric", false);
     public static RegistryObject<Item> TM_OVERHEAT = registerMoveTutorItem("tm_overheat", "overheat","Fire", false);
     public static RegistryObject<Item> TM_PAINSPLIT = registerMoveTutorItem("tm_painsplit", "painsplit","Normal", false);
-    public static RegistryObject<Item> TM_PALEOWAVE = registerMoveTutorItem("tm_paleowave", "paleowave","Rock", false);
     public static RegistryObject<Item> TM_PARABOLICCHARGE = registerMoveTutorItem("tm_paraboliccharge", "paraboliccharge","Electric", false);
     public static RegistryObject<Item> TM_PARTINGSHOT = registerMoveTutorItem("tm_partingshot", "partingshot","Dark", false);
     public static RegistryObject<Item> TM_PAYBACK = registerMoveTutorItem("tm_payback", "payback","Dark", false);
@@ -1518,7 +1517,6 @@ public class SimpleTMsItems {
     public static RegistryObject<Item> TR_OVERDRIVE = registerMoveTutorItem("tr_overdrive", "overdrive","Electric", true);
     public static RegistryObject<Item> TR_OVERHEAT = registerMoveTutorItem("tr_overheat", "overheat","Fire", true);
     public static RegistryObject<Item> TR_PAINSPLIT = registerMoveTutorItem("tr_painsplit", "painsplit","Normal", true);
-    public static RegistryObject<Item> TR_PALEOWAVE = registerMoveTutorItem("tr_paleowave", "paleowave","Rock", true);
     public static RegistryObject<Item> TR_PARABOLICCHARGE = registerMoveTutorItem("tr_paraboliccharge", "paraboliccharge","Electric", true);
     public static RegistryObject<Item> TR_PARTINGSHOT = registerMoveTutorItem("tr_partingshot", "partingshot","Dark", true);
     public static RegistryObject<Item> TR_PAYBACK = registerMoveTutorItem("tr_payback", "payback","Dark", true);

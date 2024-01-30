@@ -587,7 +587,6 @@ public class SimpleTMsItemGroups {
                         pOutput.accept((SimpleTMsItems.TM_OVERDRIVE.get()));
                         pOutput.accept((SimpleTMsItems.TM_OVERHEAT.get()));
                         pOutput.accept((SimpleTMsItems.TM_PAINSPLIT.get()));
-                        pOutput.accept((SimpleTMsItems.TM_PALEOWAVE.get()));
                         pOutput.accept((SimpleTMsItems.TM_PARABOLICCHARGE.get()));
                         pOutput.accept((SimpleTMsItems.TM_PARTINGSHOT.get()));
                         pOutput.accept((SimpleTMsItems.TM_PAYBACK.get()));
@@ -1520,7 +1519,6 @@ public class SimpleTMsItemGroups {
                         pOutput.accept((SimpleTMsItems.TR_OVERDRIVE.get()));
                         pOutput.accept((SimpleTMsItems.TR_OVERHEAT.get()));
                         pOutput.accept((SimpleTMsItems.TR_PAINSPLIT.get()));
-                        pOutput.accept((SimpleTMsItems.TR_PALEOWAVE.get()));
                         pOutput.accept((SimpleTMsItems.TR_PARABOLICCHARGE.get()));
                         pOutput.accept((SimpleTMsItems.TR_PARTINGSHOT.get()));
                         pOutput.accept((SimpleTMsItems.TR_PAYBACK.get()));
