@@ -17,3 +17,6 @@
 - Removed 1 fake TM/TR
 - In collaboration with davo899: 
   - Made SimpleTMs compatible with *[CobblemonTrainers](https://www.curseforge.com/minecraft/mc-mods/cobblemontrainers)*
+
+#### [1.1.2(February 4th, 2024)](#1-1-2)
+- Corrected some TM/TR item drops

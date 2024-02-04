@@ -60,7 +60,7 @@ public class ModEvents {
                     float randomTRChance = world.getRandom().nextFloat() * 100;
                     float dropChanceTRPercentage = config.trDropPercentChance;
                     if (randomTRChance <= dropChanceTRPercentage && !droppedTRitem.isEmpty()) {
-                        spawnTMItem(world, playerEntity, pos, droppedTMitem, event);
+                        spawnTMItem(world, playerEntity, pos, droppedTRitem, event);
                     }
                 }
             }
